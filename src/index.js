@@ -102,7 +102,7 @@ class Game extends React.Component {
       );
 
       return (
-        <li key={idx}>
+        <li key={idx} style={{fontWeight: this.state.moveNumber === idx ? "bold" : "normal"}}>
           <button onClick={() => this.jumpTo(idx)}>{desc}</button>
         </li>
       );
