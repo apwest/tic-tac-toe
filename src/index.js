@@ -22,9 +22,13 @@ class Board extends React.Component {
   }
 
   handleClick(i) {
-    // Create a copy of squares to maintain immutability, then make
-    // changes to the copy as necessary and store it in state.
+    // Create a copy of squares to maintain immutability
     const squares = this.state.squares.slice();
+    // Check if square is already filled or if there's a winner
+    if (squares[i] || checkForWinner(squares)) {
+      return;
+    }
+    // Change the copy as necessary and update the state
     squares[i] = this.state.xIsNext ? 'X' : 'O';
     this.setState({
       squares: squares,
@@ -42,7 +46,13 @@ class Board extends React.Component {
   }
 
   render() {
-    const status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
+    const winner = checkForWinner(this.state.squares);
+    let status;
+    if (winner) {
+      status = 'Winner: ' + winner;
+    } else {
+      status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
+    }
 
     return (
       <div>
@@ -90,3 +100,23 @@ ReactDOM.render(
   document.getElementById('root')
 );
 
+function checkForWinner(squares) {
+  // Winning lines
+  const lines = [
+    [0,1,2], [3,4,5], [6,7,8],
+    [0,3,6], [1,4,7], [2,5,8],
+    [0,4,8], [2,4,6],
+  ];
+
+  // Check if any of the winning lines are filled with X's or O's
+  // and return 'X' or 'O' if true.
+  for (let i = 0; i < lines.length; i++) {
+    const [a,b,c] = lines[i];
+    if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
+      return squares[a];
+    }
+  }
+
+  // No winner
+  return null;
+}
